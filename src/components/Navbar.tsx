@@ -1,54 +1,135 @@
-"use client";
+'use client';
 
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Menu, X, User } from 'lucide-react';
 
-export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const nav = document.querySelector('nav');
-      if (nav) nav.classList.add('opacity-100', 'translate-y-0');
-    }, 100);
-    return () => clearTimeout(timer);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen(!isUserMenuOpen);
+  };
+
+  const navLinks = [
+    { href: '#home', label: 'Home' },
+    { href: '#about', label: 'About' },
+    { href: '#grow', label: 'Grow with us' },
+    { href: '#contact', label: 'Contact' },
+  ];
+
   return (
-    <nav className="flex justify-between items-center py-2 bg-gray-600 text-white font-semibold rounded-2xl mx-4 mt-4 px-4 opacity-0 -translate-y-4 transition-all duration-500 ease-in-out">
-      {/* Logo (myQS) */}
-      <div className="flex justify-start">
-        <Link href="/myqs" className="px-4 bg-black text-white rounded-full py-1 hover:scale-105 transition-transform duration-200">myQS</Link>
-      </div>
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        isScrolled
+          ? 'bg-black/90 backdrop-blur-[25px]'
+          : 'bg-black/80 backdrop-blur-[20px]'
+      } border-b border-white/10 shadow-md`}
+    >
+      <div className="flex items-center justify-between w-full max-w-7xl mx-auto px-6 py-3">
+        {/* Hamburger Menu - Left */}
+        <button
+          onClick={toggleMenu}
+          className="p-2 rounded-full hover:bg-white/10 transition-all duration-300 hover:scale-110"
+          aria-label="Toggle menu"
+        >
+          {isMenuOpen ? (
+            <X className="w-5 h-5 text-green-400 transition-transform duration-300" />
+          ) : (
+            <Menu className="w-5 h-5 text-white hover:text-green-400 transition-transform duration-300" />
+          )}
+        </button>
 
-      {/* Hamburger Icon and Menu for mobile */}
-      <div className="flex items-center">
-        <div className="md:hidden">
-          <button onClick={() => setIsOpen(!isOpen)} className="p-2 focus:outline-none hover:text-gray-300 transition-colors">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-            </svg>
+        {/* Logo - Center */}
+        <a
+          href="#"
+          className="text-2xl font-black text-green-400 hover:text-green-300 transition-all duration-300 hover:scale-105"
+        >
+          myQS
+        </a>
+
+        {/* User Icon - Right */}
+        <div className="relative">
+          <button
+            onClick={toggleUserMenu}
+            className="p-2 rounded-full hover:bg-white/10 transition-all duration-300 hover:scale-110 group"
+            aria-label="User menu"
+          >
+            <User className="w-5 h-5 text-white group-hover:text-green-400" />
           </button>
-        </div>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex md:space-x-4">
-          <Link href="/" className="px-4 hover:text-gray-300 transition-colors duration-200">home</Link>
-          <Link href="/about" className="px-4 hover:text-gray-300 transition-colors duration-200">about</Link>
-          <Link href="/grow" className="px-4 hover:text-gray-300 transition-colors duration-200">grow with us</Link>
-          <Link href="/contact" className="px-4 hover:text-gray-300 transition-colors duration-200">contact</Link>
+          {/* User Dropdown Menu */}
+          {isUserMenuOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+              <div className="p-2">
+                <button className="w-full text-left px-4 py-3 text-white/80 hover:text-green-400 hover:bg-white/5 rounded-xl transition-all duration-200 font-medium">
+                  Sign In
+                </button>
+                <button className="w-full text-left px-4 py-3 text-white/80 hover:text-green-400 hover:bg-white/5 rounded-xl transition-all duration-200 font-medium">
+                  Register
+                </button>
+                <div className="h-px bg-white/10 my-2"></div>
+                <button className="w-full text-left px-4 py-3 text-white/80 hover:text-green-400 hover:bg-white/5 rounded-xl transition-all duration-200 font-medium">
+                  Profile
+                </button>
+                <button className="w-full text-left px-4 py-3 text-white/80 hover:text-green-400 hover:bg-white/5 rounded-xl transition-all duration-200 font-medium">
+                  Settings
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden absolute top-16 right-4 bg-gray-600 rounded-lg p-4 flex flex-col space-y-2 animate-slide-in">
-          <Link href="/" className="px-4 hover:text-gray-300 transition-colors duration-200" onClick={() => setIsOpen(false)}>home</Link>
-          <Link href="/about" className="px-4 hover:text-gray-300 transition-colors duration-200" onClick={() => setIsOpen(false)}>about</Link>
-          <Link href="/grow" className="px-4 hover:text-gray-300 transition-colors duration-200" onClick={() => setIsOpen(false)}>grow with us</Link>
-          <Link href="/contact" className="px-4 hover:text-gray-300 transition-colors duration-200" onClick={() => setIsOpen(false)}>contact</Link>
+      {/* Mobile/Collapsed Menu Overlay */}
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+          onClick={toggleMenu}
+        >
+          <div
+            className="absolute top-20 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 p-6 animate-in slide-in-from-top-4 duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="space-y-4">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="block text-white/80 hover:text-green-400 font-medium transition-all duration-300 py-3 px-4 rounded-xl hover:bg-white/5"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
+      )}
+
+      {/* Close user menu when clicking outside */}
+      {isUserMenuOpen && (
+        <div
+          className="fixed inset-0 z-30"
+          onClick={() => setIsUserMenuOpen(false)}
+        />
       )}
     </nav>
   );
-}
+};
+
+export default Navbar;

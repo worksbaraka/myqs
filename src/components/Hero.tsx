@@ -33,7 +33,6 @@ const Hero: React.FC = () => {
   const particleSystemRef = useRef<HTMLDivElement>(null);
   const mouseTrailRef = useRef<HTMLDivElement>(null);
   
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const animationIdRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const particleIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
@@ -375,12 +374,9 @@ const Hero: React.FC = () => {
 
   // Mouse interaction
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    const newMousePos = { x: e.clientX, y: e.clientY };
-    setMousePosition(newMousePos);
-    
     // Create crosshairs occasionally
     if (Math.random() > 0.985) {
-      createBlueprintCrosshair(newMousePos.x, newMousePos.y);
+      createBlueprintCrosshair(e.clientX, e.clientY);
     }
     
     // Apply parallax effect
@@ -488,7 +484,10 @@ const Hero: React.FC = () => {
 
       {/* Hero Content */}
       <div className={styles.heroContent}>
-        <h1 className={styles.heroTitle}>myQS</h1>
+        <h1 className={styles.heroTitle}>
+          <span className={styles.logoWhite}>my</span>
+          <span className={styles.logoYellow}>QS</span>
+        </h1>
         <p className={styles.heroSubtitle}>
           Delivering comprehensive quantity surveying solutions<br />
           across all sectors of the built environment with precision, integrity, and innovation.

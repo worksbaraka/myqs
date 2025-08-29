@@ -41,7 +41,7 @@ const Services: React.FC = () => {
     },
     {
       icon: '🔄',
-      title: 'Managing Contractors\' Payments',
+      title: 'Managing Contractors&apos; Payments',
       description: 'Professional payment certification and contractor management throughout project lifecycle'
     },
     {
@@ -68,12 +68,12 @@ const Services: React.FC = () => {
         <div className={styles.headerSection}>
           <div className={styles.alertBanner}>
             <div className={styles.alertIcon}>⚠️</div>
-            <h2 className={styles.alertTitle}>Don't go in blind</h2>
+            <h2 className={styles.alertTitle}>Don&apos;t go in blind</h2>
             <div className={styles.alertSubtitle}>Get referred to a QS!</div>
           </div>
 
           <div className={styles.targetAudience}>
-            Whether you're a <span className={styles.highlight}>contractor</span>,
+            Whether you&apos;re a <span className={styles.highlight}>contractor</span>,
             <span className={styles.highlight}> homeowner</span>, or
             <span className={styles.highlight}> developer</span>, we connect you with
             certified QSs across Africa to guide you through your projects financially.
@@ -137,7 +137,7 @@ const Services: React.FC = () => {
             <div className={styles.solutionHighlight}>
               <div className={styles.solutionIcon}>✨</div>
               <div className={styles.solutionText}>
-                <strong>That is where we come in.</strong> myQS facilitates seamless connections
+                <strong>That&apos;s where we come in.</strong> myQS facilitates seamless connections
                 between property owners, developers, and licensed Quantity Surveyors—promptly,
                 reliably, and with professionalism.
               </div>

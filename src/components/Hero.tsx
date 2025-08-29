@@ -494,7 +494,10 @@ const Hero: React.FC = () => {
           across all sectors of the built environment with precision, integrity, and innovation.
         </p>
         <a href="#services" className={styles.heroCta}>
-          Start Your Project
+          Get Quote
+        </a>
+        <a href="#services" className={styles.heroCta}>
+          Sign up
         </a>
       </div>
     </section>

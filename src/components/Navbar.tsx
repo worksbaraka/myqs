@@ -57,9 +57,10 @@ const Navbar = () => {
         {/* Logo - Center */}
         <a
           href="#"
-          className="text-2xl font-black text-green-400 hover:text-green-300 transition-all duration-300 hover:scale-105"
+          className="text-2xl font-black transition-all duration-300 hover:scale-105"
         >
-          myQS
+          <span className="text-white">my</span>
+          <span className="text-[#FFD60A]">QS</span>
         </a>
 
         {/* User Icon - Right */}

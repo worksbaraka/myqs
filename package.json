@@ -11,13 +11,14 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "critters": "^0.0.23",
+    "framer-motion": "13.0.0-alpha.0",
     "lightningcss": "^1.30.1",
     "lucide-react": "^0.525.0",
     "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwind-merge": "^3.3.1",
-    "framer-motion": "13.0.0-alpha.0"
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

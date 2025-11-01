@@ -38,7 +38,8 @@ const Footer: React.FC = () => {
             <p className={styles.footerText}>
               Email: <a href="mailto:info@myqs.africa" className={styles.footerLink}>info@myqs.africa</a>
             </p>
-            {/* <p className={styles.footerText}>Phone: +123-456-7890</p> */}
+            <p className={styles.footerText}>Phone: +254 768 930 892</p>
+            <p className={styles.footerText}>Nairobi, Kenya</p>
           </div>
           <div className={styles.footerSection}>
             <h4 className={styles.footerTitle}>Follow Us</h4>

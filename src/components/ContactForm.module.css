@@ -185,6 +185,28 @@
   transform: translateX(5px);
 }
 
+/* Success / Error messages */
+.successMessage,
+.errorMessage {
+  margin-bottom: 1.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.successMessage {
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+.errorMessage {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .contactSection {

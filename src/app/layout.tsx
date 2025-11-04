@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           id="adsense-verification"
           async 
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8772969412576999"
-          crossorigin="anonymous">
+          crossOrigin="anonymous"
           />
       </head>
       <body>{children}</body>

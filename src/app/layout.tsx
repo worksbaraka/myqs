@@ -41,8 +41,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8772969412576999"
-     crossorigin="anonymous"></script>
+        <script 
+          id="adsense-verification"
+          async 
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8772969412576999"
+          crossorigin="anonymous">
+          />
       </head>
       <body>{children}</body>
     </html>

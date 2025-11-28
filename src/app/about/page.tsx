@@ -4,20 +4,18 @@ import About from "@/components/About";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 import GrowWithUs from "@/components/GrowWithUs";
-import Services from "@/components/Services"; // if you want extra content
+import Services from "@/components/Services";
 
 export const metadata = {
-  title: "About myQS – Professional Quantity Surveyors in Kenya",
+  title: "About myQS, Professional Quantity Surveyors in Kenya",
   description: "Nairobi-based quantity surveying firm with in-house chartered team delivering cost planning, BoQs, and budget management across East Africa.",
 };
 
 export default function AboutPage() {
   return (
     <>
-      {/* Reuse your existing Hero exactly as on homepage */}
       <Hero />
 
-      {/* Full custom About content — no props needed */}
       <section className="py-16 md:py-24 bg-gray-50">
         <div className="max-w-5xl mx-auto px-6">
           <h1 className="text-4xl md:text-5xl font-bold text-center mb-12">
@@ -52,11 +50,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Optional: reuse your existing components for more content */}
       <GrowWithUs />
-      {/* <Services /> */} {/* Uncomment if you want */}
+      {/* <Services /> */}
 
-      {/* Contact Section with real details */}
+      {/* Contact */}
       <section className="py-20 bg-blue-900 text-white">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-10">Get In Touch</h2>

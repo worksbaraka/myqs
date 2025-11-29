@@ -2,11 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { Menu, X, User } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,11 +28,13 @@ const Navbar = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
   };
 
+  // Navigation links, all direct to dedicated pages
   const navLinks = [
-    { href: '#home', label: 'Home' },
-    { href: '#about', label: 'About' },
-    { href: '#grow', label: 'Grow with us' },
-    { href: '#contact', label: 'Contact' },
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    //{ href: '/services', label: 'Services' },
+    //{ href: '/grow', label: 'Grow with us' },
+    { href: '/contact', label: 'Contact' },
   ];
 
   return (
@@ -41,7 +46,7 @@ const Navbar = () => {
       } border-b border-white/10 shadow-md`}
     >
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto px-6 py-3">
-        {/* Hamburger Menu - Left */}
+        {/* Hamburger */}
         <button
           onClick={toggleMenu}
           className="p-2 rounded-full hover:bg-white/10 transition-all duration-300 hover:scale-110"
@@ -54,16 +59,16 @@ const Navbar = () => {
           )}
         </button>
 
-        {/* Logo - Center */}
-        <a
-          href="#"
+        {/* Logo */}
+        <Link
+          href="/"
           className="text-2xl font-black transition-all duration-300 hover:scale-105"
         >
           <span className="text-white">my</span>
           <span className="text-[#FFD60A]">QS</span>
-        </a>
+        </Link>
 
-        {/* User Icon - Right */}
+        {/* User Icon */}
         <div className="relative">
           <button
             onClick={toggleUserMenu}
@@ -73,7 +78,7 @@ const Navbar = () => {
             <User className="w-5 h-5 text-white group-hover:text-green-400" />
           </button>
 
-          {/* User Dropdown Menu */}
+          {/* Dropdown Menu */}
           {isUserMenuOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl animate-in slide-in-from-top-2 duration-200">
               <div className="p-2">
@@ -96,7 +101,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile/Collapsed Menu Overlay */}
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
@@ -108,14 +113,14 @@ const Navbar = () => {
           >
             <div className="space-y-4">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
                   className="block text-white/80 hover:text-green-400 font-medium transition-all duration-300 py-3 px-4 rounded-xl hover:bg-white/5"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>

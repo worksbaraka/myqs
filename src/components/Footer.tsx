@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
           <div className={styles.footerSection}>
             <h4 className={styles.footerTitle}>Contact Info</h4>
             <p className={styles.footerText}>
-              Email: <a href="mailto:info@myqs.africa" className={styles.footerLink}>info@myqs.africa</a>
+              Email: <a href="mailto:info@myqs.africa" className={styles.footerLink}>info@myqs.co.ke</a>
             </p>
             <p className={styles.footerText}>Phone: +254 768 930 892</p>
             <p className={styles.footerText}>Nairobi, Kenya</p>

@@ -2,14 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { Menu, X, User } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,7 +26,7 @@ const Navbar = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
   };
 
-  // Navigation links, all direct to dedicated pages
+  // Navigation links - all direct to dedicated pages
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
@@ -46,7 +44,7 @@ const Navbar = () => {
       } border-b border-white/10 shadow-md`}
     >
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto px-6 py-3">
-        {/* Hamburger */}
+        {/* Hamburger Menu */}
         <button
           onClick={toggleMenu}
           className="p-2 rounded-full hover:bg-white/10 transition-all duration-300 hover:scale-110"

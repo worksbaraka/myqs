@@ -3,7 +3,7 @@ import ContactForm from '@/components/ContactForm';
 import Footer from '@/components/Footer';
 
 export const metadata = {
-  title: 'Contact Us - myQS',
+  title: 'Contact Us, myQS',
   description: 'Get in touch with myQS for comprehensive quantity surveying services across all sectors.',
 };
 

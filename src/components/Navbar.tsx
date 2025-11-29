@@ -26,7 +26,7 @@ const Navbar = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
   };
 
-  // Navigation links - all direct to dedicated pages
+  // Navigation links , all direct to dedicated pages
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },

@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
             <h2>2. How We Do NOT Collect</h2>
             <ul>
               <li>Sensitive personal data (religion, health, ethnicity, political opinions, etc.)</li>
-              <li>Payment card details — all payments are processed by trusted third-party providers</li>
+              <li>Payment card details: all payments are processed by trusted third-party providers</li>
             </ul>
 
             <h2>3. How We Use Your Information</h2>
@@ -53,21 +53,21 @@ export default function PrivacyPolicyPage() {
               <li>To provide quotes and deliver quantity surveying services</li>
               <li>To communicate with you about your project</li>
               <li>To improve our website and services</li>
-              <li>To send occasional marketing emails (only with your consent — you can unsubscribe anytime)</li>
+              <li>To send occasional marketing emails (only with your consent; you can unsubscribe anytime)</li>
               <li>To comply with legal obligations</li>
             </ul>
 
             <h2>4. Legal Basis for Processing (GDPR & Kenya DPA)</h2>
             <ul>
-              <li>Contract — to deliver the services you requested</li>
-              <li>Consent — for marketing emails and non-essential cookies</li>
-              <li>Legitimate interests — analytics, fraud prevention, service improvement</li>
+              <li>Contract: to deliver the services you requested</li>
+              <li>Consent: for marketing emails and non-essential cookies</li>
+              <li>Legitimate interests: analytics, fraud prevention, service improvement</li>
             </ul>
 
             <h2>5. Who We Share Your Data With</h2>
             <ul>
               <li>Trusted service providers (email tools, hosting, form processors)</li>
-              <li>Google LLC (Analytics & AdSense) — USA, protected by EU Standard Contractual Clauses</li>
+              <li>Google LLC (Analytics & AdSense): USA, protected by EU Standard Contractual Clauses</li>
               <li>Law enforcement or authorities when legally required</li>
             </ul>
             <p className="font-medium">We never sell your personal data.</p>

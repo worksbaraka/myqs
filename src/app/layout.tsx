@@ -79,6 +79,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        {/* Google tag (gtag.js) */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-YWMMDDBYP2"
+          suppressHydrationWarning
+        />
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){window.dataLayer.push(arguments);}
+                gtag('js', new Date());
+                
+                gtag('consent', 'default', {
+                  'analytics_storage': 'denied',
+                  'ad_storage': 'denied',
+                  'ad_user_data': 'denied',
+                  'ad_personalization': 'denied'
+                });
+                
+                gtag('config', 'G-YWMMDDBYP2', {
+                  anonymize_ip: true,
+                  cookie_flags: 'SameSite=None;Secure'
+                });
+              })();
+            `,
+          }}
+        />
+
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

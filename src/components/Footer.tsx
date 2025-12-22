@@ -76,7 +76,6 @@ const Footer: React.FC = () => {
           <ul className={styles.footerLegalLinks}>
             <li><a href="/privacy-policy" className={styles.footerLink}>Privacy Policy</a></li>
             <li><a href="/terms-of-service" className={styles.footerLink}>Terms of Service</a></li>
-            <li><a href="/cookie-policy" className={styles.footerLink}>Cookie Policy</a></li>
           </ul>
         </div>
       </footer>

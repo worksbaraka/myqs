@@ -19,7 +19,7 @@ export default function PrivacyPolicyPage() {
             <p className="text-sm text-gray-500 mt-2">Effective Date: 01 December 2025</p>
 
             <p className="mt-6">
-              myQS ("we", "us", "our") operates <a href="https://www.myqs.co.ke" className="text-blue-900 underline">www.myqs.co.ke</a> 
+              myQS (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) operates <a href="https://www.myqs.co.ke" className="text-blue-900 underline">www.myqs.co.ke</a> 
               and provides professional quantity surveying services across Kenya and Africa.
             </p>
 
@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
             <h2>2. How We Do NOT Collect</h2>
             <ul>
               <li>Sensitive personal data (religion, health, ethnicity, political opinions, etc.)</li>
-              <li>Payment card details: all payments are processed by trusted third-party providers</li>
+              <li>Payment card details; all payments are processed by trusted third-party providers</li>
             </ul>
 
             <h2>3. How We Use Your Information</h2>
@@ -67,7 +67,7 @@ export default function PrivacyPolicyPage() {
             <h2>5. Who We Share Your Data With</h2>
             <ul>
               <li>Trusted service providers (email tools, hosting, form processors)</li>
-              <li>Google LLC (Analytics & AdSense): USA, protected by EU Standard Contractual Clauses</li>
+              <li>Google LLC (Analytics & AdSense); USA, protected by EU Standard Contractual Clauses</li>
               <li>Law enforcement or authorities when legally required</li>
             </ul>
             <p className="font-medium">We never sell your personal data.</p>

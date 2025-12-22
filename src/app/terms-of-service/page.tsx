@@ -19,8 +19,8 @@ export default function TermsOfServicePage() {
             <p className="text-sm text-gray-500 mt-2">Effective Date: 01 December 2025</p>
 
             <p className="mt-6">
-              Welcome to myQS. These Terms of Service ("Terms") govern your use of <a href="https://www.myqs.co.ke" className="text-blue-900 underline">www.myqs.co.ke</a> 
-              (the "Site") and our professional quantity surveying services (collectively, the "Services").
+              Welcome to myQS. These Terms of Service (&quot;Terms&quot;) govern your use of <a href="https://www.myqs.co.ke" className="text-blue-900 underline">www.myqs.co.ke</a> 
+              (the &quot;Site&quot;) and our professional quantity surveying services (collectively, the &quot;Services&quot;).
             </p>
 
             <p>By accessing or using the Services, you agree to these Terms. If you do not agree, do not use the Services.</p>
@@ -53,7 +53,7 @@ export default function TermsOfServicePage() {
             <p>All content on the Site is owned by myQS. You may not copy, modify, or distribute without permission.</p>
 
             <h2>6. Disclaimers</h2>
-            <p>Services provided "as is." We do not guarantee uninterrupted access or perfect outcomes (construction estimates have uncertainties).</p>
+            <p>Services provided &quot;as is.&quot; We do not guarantee uninterrupted access or perfect outcomes (construction estimates have uncertainties).</p>
 
             <h2>7. Limitation of Liability</h2>
             <p>To the extent permitted by law, myQS is not liable for indirect, consequential, or punitive damages. Our total liability is limited to fees paid in the last 12 months.</p>
@@ -68,7 +68,7 @@ export default function TermsOfServicePage() {
             <p>Questions? Email: <a href="mailto:info@myqs.co.ke" className="text-blue-900">info@myqs.co.ke</a></p>
 
             <p className="mt-12 text-sm text-gray-500">
-              Let's build smarter together.
+              Let&apos;s build smarter together.
             </p>
           </article>
         </div>

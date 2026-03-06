@@ -48,5 +48,41 @@
   {% else %}
   <p>No jobs posted yet.</p>
   {% endif %}
+
+  <h2>Pending QS Registration Payments</h2>
+  {% if pending_qs %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>Phone</th><th>Location</th><th>Qualification</th><th>Experience</th><th>Payment Ref</th><th>Fee</th><th>Submitted</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      {% for qs in pending_qs %}
+      <tr>
+        <td>{{ qs.name }}</td>
+        <td>{{ qs.email }}</td>
+        <td>{{ qs.phone }}</td>
+        <td>{{ qs.location or '-' }}</td>
+        <td>{{ qs.qualification or '-' }}</td>
+        <td>{{ qs.experience_years if qs.experience_years is not none else '-' }}</td>
+        <td>{{ qs.payment_reference }}</td>
+        <td>{{ qs.registration_fee_amount if qs.registration_fee_amount is not none else '-' }}</td>
+        <td>{{ qs.created_at }}</td>
+        <td>
+          <form method="post" action="{{ url_for('approve_qs_registration', user_id=qs.user_id) }}" style="display:inline;">
+            <input type="text" name="admin_note" placeholder="Approval note (optional)" />
+            <button type="submit">Confirm Payment</button>
+          </form>
+          <form method="post" action="{{ url_for('reject_qs_registration', user_id=qs.user_id) }}" style="display:inline;">
+            <input type="text" name="admin_note" placeholder="Reason if rejected" />
+            <button type="submit">Reject</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No pending QS registrations.</p>
+  {% endif %}
 </body>
 </html>

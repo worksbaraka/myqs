@@ -43,6 +43,7 @@ app.config["DATABASE"] = os.environ.get("DB_PATH", DB_PATH)
 app.config["TASK_UPLOAD_FOLDER"] = TASK_UPLOAD_FOLDER
 app.config["SUBMISSION_UPLOAD_FOLDER"] = SUBMISSION_UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
+app.config["QS_REGISTRATION_FEE"] = os.environ.get("QS_REGISTRATION_FEE", "100")
 
 EVENT_LABELS = {
     "job_posted": "Client posted a new job",
@@ -175,6 +176,27 @@ def init_db():
             FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (event_id) REFERENCES job_negotiation_events(id)
         );
+
+        CREATE TABLE IF NOT EXISTS qs_registrations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL UNIQUE,
+            phone TEXT NOT NULL,
+            location TEXT,
+            qualification TEXT,
+            experience_years INTEGER,
+            payment_reference TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'pending_confirmation'
+                CHECK (status IN ('pending_confirmation', 'approved', 'rejected')),
+            admin_note TEXT,
+            approval_message TEXT,
+            welcome_message_sent INTEGER NOT NULL DEFAULT 0,
+            registration_fee_amount REAL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            confirmed_at DATETIME,
+            confirmed_by_admin_id INTEGER,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (confirmed_by_admin_id) REFERENCES users(id)
+        );
         """
     )
     # Lightweight migrations for existing local DBs.
@@ -209,6 +231,12 @@ def init_db():
         db.execute("ALTER TABLE job_assignments ADD COLUMN assigned_by_admin_id INTEGER")
     if assign_cols and "claimed_at" not in assign_cols:
         db.execute("ALTER TABLE job_assignments ADD COLUMN claimed_at DATETIME")
+
+    qs_cols = {row["name"] for row in db.execute("PRAGMA table_info(qs_registrations)").fetchall()}
+    if qs_cols and "approval_message" not in qs_cols:
+        db.execute("ALTER TABLE qs_registrations ADD COLUMN approval_message TEXT")
+    if qs_cols and "welcome_message_sent" not in qs_cols:
+        db.execute("ALTER TABLE qs_registrations ADD COLUMN welcome_message_sent INTEGER NOT NULL DEFAULT 0")
     db.commit()
 
 
@@ -235,11 +263,24 @@ def role_required(*allowed_roles):
                 return redirect(url_for("login"))
             if session.get("role") not in allowed_roles:
                 return "Forbidden", 403
+            if session.get("role") == "qs":
+                registration = get_qs_registration(session["user_id"])
+                if registration is not None and registration["status"] != "approved":
+                    return "QS account access is pending payment confirmation by admin.", 403
             return view(*args, **kwargs)
 
         return wrapped
 
     return decorator
+
+
+def get_qs_registration(user_id):
+    db = get_db()
+    return db.execute(
+        "SELECT id, status, payment_reference, created_at, admin_note, confirmed_at "
+        "FROM qs_registrations WHERE user_id = ?",
+        (user_id,),
+    ).fetchone()
 
 
 def allowed_file(filename):
@@ -418,49 +459,128 @@ def register():
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
         role = request.form.get("role", "client")
+        phone = request.form.get("phone", "").strip()
+        location = request.form.get("location", "").strip()
+        qualification = request.form.get("qualification", "").strip()
+        experience_years_raw = request.form.get("experience_years", "").strip()
+        payment_reference = request.form.get("payment_reference", "").strip()
 
         if not name or not email or not password:
-            return render_template("register.html", error="Name, email, and password are required.")
+            return render_template(
+                "register.html",
+                error="Name, email, and password are required.",
+                qs_registration_fee=app.config["QS_REGISTRATION_FEE"],
+            )
         if role not in {"client", "qs", "admin"}:
-            return render_template("register.html", error="Invalid role selected.")
+            return render_template(
+                "register.html",
+                error="Invalid role selected.",
+                qs_registration_fee=app.config["QS_REGISTRATION_FEE"],
+            )
+        if role == "qs":
+            if not phone or not payment_reference:
+                return render_template(
+                    "register.html",
+                    error="QS registration requires phone number and payment reference.",
+                    qs_registration_fee=app.config["QS_REGISTRATION_FEE"],
+                )
+            if experience_years_raw:
+                try:
+                    int(experience_years_raw)
+                except ValueError:
+                    return render_template(
+                        "register.html",
+                        error="Experience years must be a whole number.",
+                        qs_registration_fee=app.config["QS_REGISTRATION_FEE"],
+                    )
 
         db = get_db()
         existing = db.execute("SELECT id FROM users WHERE email = ?", (email,)).fetchone()
         if existing:
-            return render_template("register.html", error="Email already registered.")
+            return render_template(
+                "register.html",
+                error="Email already registered.",
+                qs_registration_fee=app.config["QS_REGISTRATION_FEE"],
+            )
 
-        db.execute(
+        cursor = db.execute(
             "INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)",
             (name, email, generate_password_hash(password), role),
         )
+        if role == "qs":
+            experience_years = int(experience_years_raw) if experience_years_raw else None
+            db.execute(
+                "INSERT INTO qs_registrations "
+                "(user_id, phone, location, qualification, experience_years, payment_reference, registration_fee_amount) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (
+                    cursor.lastrowid,
+                    phone,
+                    location or None,
+                    qualification or None,
+                    experience_years,
+                    payment_reference,
+                    float(app.config["QS_REGISTRATION_FEE"]),
+                ),
+            )
         db.commit()
-        return redirect(url_for("login"))
+        if role == "qs":
+            return redirect(url_for("login", registered="qs_pending"))
+        return redirect(url_for("login", registered="ok"))
 
-    return render_template("register.html")
+    return render_template("register.html", qs_registration_fee=app.config["QS_REGISTRATION_FEE"])
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    info = None
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
 
         db = get_db()
         user = db.execute(
-            "SELECT id, name, email, password_hash, role FROM users WHERE email = ?",
+            "SELECT u.id, u.name, u.email, u.password_hash, u.role, qr.status AS qs_status, "
+            "qr.approval_message, qr.welcome_message_sent "
+            "FROM users u "
+            "LEFT JOIN qs_registrations qr ON qr.user_id = u.id "
+            "WHERE u.email = ?",
             (email,),
         ).fetchone()
 
         if user is None or not check_password_hash(user["password_hash"], password):
             return render_template("login.html", error="Invalid email or password.")
+        if user["role"] == "qs" and user["qs_status"] in {"pending_confirmation", "rejected"}:
+            if user["qs_status"] == "pending_confirmation":
+                return render_template(
+                    "login.html",
+                    error="Your QS payment is awaiting admin confirmation. Access will be granted after approval.",
+                )
+            return render_template(
+                "login.html",
+                error="Your QS registration was rejected. Please contact admin support.",
+            )
 
         session.clear()
         session["user_id"] = user["id"]
         session["name"] = user["name"]
         session["role"] = user["role"]
+        if user["role"] == "qs" and user["qs_status"] == "approved" and not user["welcome_message_sent"]:
+            welcome_message = user["approval_message"] or "Welcome to myQS. Your registration fee has been confirmed and your account is now approved."
+            session["welcome_message"] = welcome_message
+            db.execute(
+                "UPDATE qs_registrations SET welcome_message_sent = 1 WHERE user_id = ?",
+                (user["id"],),
+            )
+            db.commit()
         return redirect(url_for("dashboard"))
 
-    return render_template("login.html")
+    registered = request.args.get("registered", "")
+    if registered == "qs_pending":
+        info = "QS registration submitted. Please complete payment and wait for admin confirmation."
+    elif registered == "ok":
+        info = "Registration successful. You can now log in."
+    return render_template("login.html", info=info)
 
 
 @app.route("/logout")
@@ -545,7 +665,13 @@ def qs_dashboard():
         "ORDER BY j.created_at DESC"
     ).fetchall()
     unread_count = unread_count_for_user(session["role"], session["user_id"])
-    return render_template("dashboard_qs.html", jobs=open_jobs, name=session.get("name"), unread_count=unread_count)
+    return render_template(
+        "dashboard_qs.html",
+        jobs=open_jobs,
+        name=session.get("name"),
+        unread_count=unread_count,
+        welcome_message=session.pop("welcome_message", None),
+    )
 
 
 @app.route("/jobs/<int:job_id>/download")
@@ -1294,8 +1420,76 @@ def admin_dashboard():
         "LEFT JOIN users au ON au.id = a.qs_id "
         "ORDER BY j.created_at DESC"
     ).fetchall()
+    pending_qs = db.execute(
+        "SELECT qr.user_id, u.name, u.email, qr.phone, qr.location, qr.qualification, qr.experience_years, "
+        "qr.payment_reference, qr.registration_fee_amount, qr.created_at, qr.status "
+        "FROM qs_registrations qr "
+        "JOIN users u ON u.id = qr.user_id "
+        "WHERE qr.status = 'pending_confirmation' "
+        "ORDER BY qr.created_at ASC"
+    ).fetchall()
     unread_count = unread_count_for_user(session["role"], session["user_id"])
-    return render_template("dashboard_admin.html", counts=counts, jobs=jobs, name=session.get("name"), unread_count=unread_count)
+    return render_template(
+        "dashboard_admin.html",
+        counts=counts,
+        jobs=jobs,
+        pending_qs=pending_qs,
+        name=session.get("name"),
+        unread_count=unread_count,
+    )
+
+
+@app.route("/admin/qs-registrations/<int:user_id>/approve", methods=["POST"])
+@role_required("admin")
+def approve_qs_registration(user_id):
+    db = get_db()
+    registration = db.execute(
+        "SELECT id, status FROM qs_registrations WHERE user_id = ?",
+        (user_id,),
+    ).fetchone()
+    if registration is None:
+        return "QS registration not found", 404
+    if registration["status"] != "pending_confirmation":
+        return redirect(url_for("admin_dashboard"))
+
+    qs_user = db.execute(
+        "SELECT name FROM users WHERE id = ?",
+        (user_id,),
+    ).fetchone()
+    welcome_message = f"Welcome {qs_user['name']}. Your registration fee payment has been confirmed and your myQS account is approved. You can now access tasks."
+    db.execute(
+        "UPDATE qs_registrations SET status = 'approved', confirmed_at = CURRENT_TIMESTAMP, "
+        "confirmed_by_admin_id = ?, admin_note = ?, approval_message = ?, welcome_message_sent = 0 "
+        "WHERE user_id = ?",
+        (
+            session["user_id"],
+            request.form.get("admin_note", "").strip() or None,
+            welcome_message,
+            user_id,
+        ),
+    )
+    db.commit()
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/admin/qs-registrations/<int:user_id>/reject", methods=["POST"])
+@role_required("admin")
+def reject_qs_registration(user_id):
+    db = get_db()
+    registration = db.execute(
+        "SELECT id FROM qs_registrations WHERE user_id = ?",
+        (user_id,),
+    ).fetchone()
+    if registration is None:
+        return "QS registration not found", 404
+
+    db.execute(
+        "UPDATE qs_registrations SET status = 'rejected', confirmed_at = CURRENT_TIMESTAMP, "
+        "confirmed_by_admin_id = ?, admin_note = ? WHERE user_id = ?",
+        (session["user_id"], request.form.get("admin_note", "").strip() or "Payment not confirmed", user_id),
+    )
+    db.commit()
+    return redirect(url_for("admin_dashboard"))
 
 
 # Required for Vercel to work

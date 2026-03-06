@@ -10,20 +10,39 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DB_PATH = os.path.join(BASE_DIR, "myqs.db")
-TASK_UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads", "tasks")
-SUBMISSION_UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads", "submissions")
 ALLOWED_EXTENSIONS = {"pdf", "doc", "docx", "xls", "xlsx", "png", "jpg", "jpeg", "zip"}
+
+def resolve_runtime_paths():
+    # Vercel serverless has a read-only project filesystem; keep mutable files in a writable root.
+    preferred_root = os.environ.get("APP_DATA_DIR", BASE_DIR)
+    fallback_root = "/tmp/myqs_data"
+    candidate_roots = [preferred_root]
+    if preferred_root != fallback_root:
+        candidate_roots.append(fallback_root)
+
+    last_error = None
+    for root in candidate_roots:
+        try:
+            uploads_root = os.path.join(root, "uploads")
+            task_folder = os.path.join(uploads_root, "tasks")
+            submission_folder = os.path.join(uploads_root, "submissions")
+            os.makedirs(task_folder, exist_ok=True)
+            os.makedirs(submission_folder, exist_ok=True)
+            return os.path.join(root, "myqs.db"), task_folder, submission_folder
+        except OSError as exc:
+            last_error = exc
+
+    raise RuntimeError(f"Unable to create writable runtime directories: {last_error}")
+
+
+DB_PATH, TASK_UPLOAD_FOLDER, SUBMISSION_UPLOAD_FOLDER = resolve_runtime_paths()
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key-change-me")
-app.config["DATABASE"] = DB_PATH
+app.config["DATABASE"] = os.environ.get("DB_PATH", DB_PATH)
 app.config["TASK_UPLOAD_FOLDER"] = TASK_UPLOAD_FOLDER
 app.config["SUBMISSION_UPLOAD_FOLDER"] = SUBMISSION_UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
-
-os.makedirs(app.config["TASK_UPLOAD_FOLDER"], exist_ok=True)
-os.makedirs(app.config["SUBMISSION_UPLOAD_FOLDER"], exist_ok=True)
 
 EVENT_LABELS = {
     "job_posted": "Client posted a new job",

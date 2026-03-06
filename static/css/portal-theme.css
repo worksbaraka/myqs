@@ -1,0 +1,64 @@
+/* Portal-specific overrides on top of shared base.css */
+body {
+  background:
+    linear-gradient(180deg, rgba(10, 91, 59, 0.08) 0px, rgba(10, 91, 59, 0.03) 3px, transparent 3px) top left/100% 12px no-repeat,
+    radial-gradient(circle at 20% 0, rgba(255, 255, 255, 0.5), transparent 42%),
+    var(--bg-sand);
+  max-width: 1060px;
+  margin-inline: auto;
+  padding: 28px 16px 44px;
+  overflow-x: hidden;
+  animation: portalBgDrift 14s ease-in-out infinite alternate;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+body::before {
+  top: 88px;
+  right: -90px;
+  width: 210px;
+  height: 210px;
+  background: radial-gradient(circle, rgba(240, 190, 45, 0.14), transparent 70%);
+}
+
+body::after {
+  bottom: 14%;
+  left: -95px;
+  width: 230px;
+  height: 230px;
+  background: radial-gradient(circle, rgba(10, 91, 59, 0.14), transparent 70%);
+}
+
+@media (max-width: 860px) {
+  body {
+    padding: 18px 12px 28px;
+  }
+
+  body::before,
+  body::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+  }
+}
+
+@keyframes portalBgDrift {
+  0% {
+    background-position: top left, 20% 0, center;
+  }
+  100% {
+    background-position: top left, 68% 10%, center;
+  }
+}

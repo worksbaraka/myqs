@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
+  <title>Job Negotiation - myQS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/portal-theme.css') }}" />
+  <script src="{{ url_for('static', filename='js/shared-theme.js') }}" defer></script>
+</head>
+<body>
+  <h1>Negotiation: {{ job.title }}</h1>
+  <p class="muted">Role: {{ role }} | Signed in as: {{ name }}</p>
+  <p class="top-links">
+    <a href="{{ url_for('download_job_file', job_id=job.id) }}">Download task file</a> |
+    <a href="{{ url_for('inbox') }}">Inbox{% if unread_count %}<span class="badge">{{ unread_count }}</span>{% endif %}</a> |
+    {% if role == 'client' %}
+    <a href="{{ url_for('client_dashboard') }}">Back to Client Dashboard</a>
+    {% elif role == 'qs' %}
+    <a href="{{ url_for('qs_dashboard') }}">Back to QS Dashboard</a>
+    {% else %}
+    <a href="{{ url_for('admin_dashboard') }}">Back to Admin Dashboard</a>
+    {% endif %}
+  </p>
+
+  <div class="card">
+    <p><strong>Client:</strong> {{ job.client_name }}</p>
+    <p><strong>Status:</strong> {{ job.status }}</p>
+    <p><strong>Assigned QS:</strong> {{ assignment.qs_name if assignment else 'Unassigned' }}</p>
+    <p><strong>Description:</strong> {{ job.description or 'No description provided.' }}</p>
+    <p>
+      {% if role != 'client' %}
+      <strong>Latest QS Offer:</strong>
+      {% if latest_qs_offer is not none %}
+      <span class="amount">{{ '%.2f'|format(latest_qs_offer) }}</span>
+      {% else %}
+      Not yet
+      {% endif %}
+      {% endif %}
+      {% if role != 'qs' %}
+      |
+      <strong>Latest Admin Offer:</strong>
+      {% if latest_admin_offer is not none %}
+      <span class="amount">{{ '%.2f'|format(latest_admin_offer) }}</span>
+      {% else %}
+      Not yet
+      {% endif %}
+      {% endif %}
+    </p>
+    {% if agreement %}
+    <p><strong>Client Agreed Amount:</strong> <span class="amount">{{ '%.2f'|format(agreement.client_amount or agreement.final_amount) }}</span> (set by {{ agreement.admin_name }} on {{ agreement.agreed_at }})</p>
+    {% if role in ['client', 'admin'] and invoice_available %}
+    <p><strong>Invoice:</strong> <a href="{{ url_for('download_invoice', job_id=job.id) }}">Download invoice</a></p>
+    {% endif %}
+    {% if role != 'client' %}
+    <p><strong>QS Initial Offer:</strong> <span class="amount">{{ '%.2f'|format(agreement.qs_initial_offer or 0) }}</span></p>
+    <p><strong>Admin Margin:</strong> <span class="amount">{{ '%.2f'|format(agreement.admin_margin or 0) }}</span></p>
+    {% endif %}
+    {% endif %}
+    {% if payment %}
+    <p><strong>Payment Status:</strong> {{ payment.status }}</p>
+    <p><strong>Client Paid:</strong> {{ '%.2f'|format(payment.amount or 0) }}{% if payment.client_paid_at %} on {{ payment.client_paid_at }}{% endif %}</p>
+    {% if role != 'client' and payment.qs_paid_amount %}
+    <p><strong>QS Paid:</strong> {{ '%.2f'|format(payment.qs_paid_amount) }}{% if payment.paid_to_qs_at %} on {{ payment.paid_to_qs_at }}{% endif %}</p>
+    {% endif %}
+    {% endif %}
+  </div>
+
+  <div class="grid">
+    {% if role == 'qs' %}
+    <div class="card">
+      <h3>QS Offer</h3>
+      <form method="post" action="{{ url_for('qs_offer', job_id=job.id) }}">
+        <input type="number" name="amount" step="0.01" min="0.01" placeholder="Amount" required />
+        <textarea name="note" placeholder="Offer note to admin/client"></textarea>
+        <button type="submit">Send QS Offer</button>
+      </form>
+    </div>
+
+    {% if assignment and assignment.qs_id == session['user_id'] and assignment.claimed_at %}
+    <div class="card">
+      <h3>Upload Deliverable</h3>
+      <form method="post" enctype="multipart/form-data" action="{{ url_for('upload_submission', job_id=job.id) }}">
+        <input type="file" name="deliverable_file" required />
+        <textarea name="note" placeholder="Submission note"></textarea>
+        <button type="submit">Submit Work For Review</button>
+      </form>
+      <p class="muted">Allowed after agreement. Admin must approve before any payment.</p>
+    </div>
+    {% elif assignment and assignment.qs_id == session['user_id'] and not assignment.claimed_at %}
+    <div class="card">
+      <h3>Claim Assigned Task</h3>
+      <form method="post" action="{{ url_for('claim_job', job_id=job.id) }}">
+        <button type="submit">Claim My Assigned Task</button>
+      </form>
+      <p class="muted">After claiming, you can upload the completed deliverable.</p>
+    </div>
+    {% elif not assignment %}
+    <div class="card">
+      <h3>Claim Required</h3>
+      <p class="muted">Waiting for admin assignment. Only admin-assigned QS can claim and submit.</p>
+    </div>
+    {% else %}
+    <div class="card">
+      <h3>Submission Locked</h3>
+      <p class="muted">This job is assigned to {{ assignment.qs_name }}. Only that QS can upload deliverables.</p>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    {% if role == 'admin' %}
+    <div class="card">
+      <h3>Assign/Reassign QS</h3>
+      <form method="post" action="{{ url_for('assign_job', job_id=job.id) }}">
+        <select name="qs_id" required>
+          {% for qs_user in qs_users %}
+          <option value="{{ qs_user.id }}" {% if assignment and assignment.qs_id == qs_user.id %}selected{% endif %}>{{ qs_user.name }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">Save Assignment</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Admin Offer to Client</h3>
+      <form method="post" action="{{ url_for('admin_offer', job_id=job.id) }}">
+        <input type="number" name="amount" step="0.01" min="0.01" placeholder="Amount" required />
+        <textarea name="note" placeholder="Explain this offer"></textarea>
+        <button type="submit">Send Admin Offer</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Finalize Agreement</h3>
+      <form method="post" action="{{ url_for('finalize_agreement', job_id=job.id) }}">
+        <input type="number" name="amount" step="0.01" min="0.01" placeholder="Client amount to charge" required />
+        <textarea name="note" placeholder="Final agreement note"></textarea>
+        <button type="submit">Set Client Amount + Margin</button>
+      </form>
+      <form method="post" action="{{ url_for('accept_client_counter_as_agreement', job_id=job.id) }}">
+        <textarea name="note" placeholder="Optional note for accepting latest client counter"></textarea>
+        <button type="submit">Accept Latest Client Counter</button>
+      </form>
+    </div>
+
+    {% if agreement %}
+    <div class="card">
+      <h3>Payment Actions</h3>
+      <form method="post" action="{{ url_for('mark_client_paid', job_id=job.id) }}">
+        <input type="text" name="reference" placeholder="Client payment reference (optional)" />
+        <button type="submit">Mark Client Paid</button>
+      </form>
+      <form method="post" action="{{ url_for('pay_qs', job_id=job.id) }}">
+        <button type="submit">Pay QS Initial Offer</button>
+      </form>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    {% if role == 'client' %}
+    <div class="card">
+      <h3>Client Counter Offer</h3>
+      <form method="post" action="{{ url_for('client_counter_offer', job_id=job.id) }}">
+        <input type="number" name="amount" step="0.01" min="0.01" placeholder="Counter amount" required />
+        <textarea name="note" placeholder="Counter note"></textarea>
+        <button type="submit">Send Counter Offer</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Accept Admin Offer</h3>
+      <form method="post" action="{{ url_for('client_accept_offer', job_id=job.id) }}">
+        <textarea name="note" placeholder="Optional acceptance note"></textarea>
+        <button type="submit">Accept Latest Admin Offer</button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+
+  <h2>Submissions</h2>
+  {% if submissions %}
+  <table>
+    <thead>
+      <tr><th>ID</th><th>QS</th><th>Status</th><th>Submitted</th><th>File</th><th>Note</th><th>Admin Action</th></tr>
+    </thead>
+    <tbody>
+      {% for s in submissions %}
+      <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.qs_name }}</td>
+        <td>{{ s.status }}</td>
+        <td>{{ s.submitted_at }}</td>
+        <td>
+          {% if role == 'client' and (s.status != 'approved' or not client_can_download_deliverable) %}
+          Available after approval and payment
+          {% else %}
+          <a href="{{ url_for('download_submission_file', job_id=job.id, submission_id=s.id) }}">Download</a>
+          {% endif %}
+        </td>
+        <td>{{ s.note or '-' }}</td>
+        <td>
+          {% if role == 'admin' and s.status == 'pending_review' %}
+          <form method="post" action="{{ url_for('approve_submission', job_id=job.id, submission_id=s.id) }}">
+            <input type="text" name="note" placeholder="Approval note (optional)" />
+            <button type="submit">Approve</button>
+          </form>
+          <form method="post" action="{{ url_for('reject_submission', job_id=job.id, submission_id=s.id) }}">
+            <input type="text" name="note" placeholder="Rejection reason" />
+            <button type="submit">Reject</button>
+          </form>
+          {% elif s.status == 'approved' %}
+          Approved{% if s.reviewed_at %} on {{ s.reviewed_at }}{% endif %}
+          {% elif s.status == 'rejected' %}
+          Rejected{% if s.reviewed_at %} on {{ s.reviewed_at }}{% endif %}
+          {% else %}
+          -
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No submissions yet.</p>
+  {% endif %}
+
+  <h2>Negotiation History</h2>
+  {% if events %}
+  <table>
+    <thead>
+      <tr><th>#</th><th>When</th><th>Actor</th><th>Event</th><th>Amount</th><th>Note</th></tr>
+    </thead>
+    <tbody>
+      {% for ev in events %}
+      <tr>
+        <td>{{ ev.id }}</td>
+        <td>{{ ev.created_at }}</td>
+        <td>{{ ev.actor_name }} ({{ ev.actor_role }})</td>
+        <td>{{ ev.event_type }}</td>
+        <td>{% if ev.amount is not none %}{{ '%.2f'|format(ev.amount) }}{% else %}-{% endif %}</td>
+        <td>{{ ev.note or '-' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No negotiation events yet.</p>
+  {% endif %}
+</body>
+</html>

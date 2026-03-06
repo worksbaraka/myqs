@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
+  <title>Inbox - myQS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/portal-theme.css') }}" />
+  <script src="{{ url_for('static', filename='js/shared-theme.js') }}" defer></script>
+</head>
+<body>
+  <h1>Inbox</h1>
+  <p class="muted">Role: {{ role }} | Signed in as: {{ name }} | Unread: {{ unread_count }}</p>
+
+  <p>
+    {% if role == 'client' %}
+    <a href="{{ url_for('client_dashboard') }}">Back to Client Dashboard</a>
+    {% elif role == 'qs' %}
+    <a href="{{ url_for('qs_dashboard') }}">Back to QS Dashboard</a>
+    {% else %}
+    <a href="{{ url_for('admin_dashboard') }}">Back to Admin Dashboard</a>
+    {% endif %}
+    | <a href="{{ url_for('logout') }}">Logout</a>
+  </p>
+
+  {% if items %}
+  <form method="post" action="{{ url_for('mark_all_inbox_read') }}">
+    <button type="submit">Mark All As Read</button>
+  </form>
+  <table>
+    <thead>
+      <tr><th>Status</th><th>When</th><th>Job</th><th>Activity</th><th>Actor</th><th>Details</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>
+          {% if item.is_read %}
+          <span class="status-pill read">Read</span>
+          {% else %}
+          <span class="status-pill unread">Unread</span>
+          {% endif %}
+        </td>
+        <td>{{ item.created_at }}</td>
+        <td>{{ item.job_title }}</td>
+        <td>{{ item.label }}</td>
+        <td>{{ item.actor_name }} ({{ item.actor_role }})</td>
+        <td>{{ item.details or '-' }}</td>
+        <td>
+          <a href="{{ url_for('open_inbox_item', event_id=item.id) }}">View</a>
+          {% if not item.is_read %}
+          <form method="post" action="{{ url_for('mark_inbox_item_read', event_id=item.id) }}">
+            <button type="submit">Mark Read</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No activity yet.</p>
+  {% endif %}
+</body>
+</html>

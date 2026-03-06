@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
+  <title>Client Dashboard - myQS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/portal-theme.css') }}" />
+  <script src="{{ url_for('static', filename='js/shared-theme.js') }}" defer></script>
+</head>
+<body>
+  <h1>Client Dashboard</h1>
+  <p>Welcome, {{ name }}. Post new tasks for QS users from here.</p>
+  <p class="top-links">
+    <a href="{{ url_for('inbox') }}">Inbox{% if unread_count %}<span class="badge">{{ unread_count }}</span>{% endif %}</a> |
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </p>
+  <p><a href="{{ url_for('create_job') }}">+ Create New Job</a></p>
+
+  <h2>Your Jobs</h2>
+  {% if jobs %}
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Title</th><th>Status</th><th>File</th><th>Negotiation</th><th>Created</th></tr>
+    </thead>
+    <tbody>
+      {% for job in jobs %}
+      <tr>
+        <td>{{ job.id }}</td>
+        <td>{{ job.title }}</td>
+        <td>{{ job.status }}</td>
+        <td>
+          {% if job.file_path %}
+          <a href="{{ url_for('download_job_file', job_id=job.id) }}">Download</a>
+          {% else %}
+          Not uploaded
+          {% endif %}
+        </td>
+        <td><a href="{{ url_for('job_negotiation', job_id=job.id) }}">Open</a></td>
+        <td>{{ job.created_at }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No jobs yet.</p>
+  {% endif %}
+</body>
+</html>

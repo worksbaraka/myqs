@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
+  <title>myQS</title>
+  <meta name="description" content="Brief description of the webpage" />
+  <link rel="icon" href="{{ url_for('static', filename='pics/favicon.png') }}" type="image/x-icon" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <script src="{{ url_for('static', filename='js/mobile.js') }}" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+</head>
+<body class="marketing-skin">
+  <div id="scroll-progress" aria-hidden="true"></div>
+  <button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">↑</button>
+  <button id="theme-toggle" class="theme-toggle-btn" type="button" aria-label="Toggle dark and light mode">🌗</button>
+  <header>
+    <div>
+      <img
+        src="{{ url_for('static', filename='pics/favicon.png') }}"
+        alt="myQS logo"
+        class="header-logo"
+      />
+    </div>
+  </header>
+
+  <main>
+    <div class="bar">
+      <button id="menu-btn" class="icon left">☰</button>
+      <a href="#welcome" class="bar-logo" aria-label="Go to top">my<span>QS</span></a>
+      <a href="/login" class="iconR">🔒</a>
+    </div>
+
+    <nav id="mobile-nav" aria-label="Main navigation">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#expertise">Services</a></li>
+        <li><a href="#grow">Join myQS</a></li>
+        <li><a href="#being">Being a QS</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div id="overlay"></div>
+
+    <section class="Welcome" id="welcome">
+      <h1>Welcome to my<span>QS</span></h1>
+      <div class="bubble-wrapper">
+        <img src="{{ url_for('static', filename='pics/thought-bubble.png') }}" alt="Bubble" id="bubble" />
+        <p class="bubble-text">
+          Delivering comprehensive quantity surveying solutions across all sectors of the built environment with precision, integrity, and innovation.
+        </p>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <h1>About us</h1>
+      <p>
+        At <strong>my<span>Qs</span></strong>, we combine industry expertise with innovative
+        technology to deliver exceptional quantity surveying services that add tangible value to your construction projects.
+      </p>
+      <p>
+        Our team of chartered quantity surveyors brings decades of combined experience across residential, commercial, industrial, and infrastructure sectors.
+      </p>
+      <div class="slider-shell">
+        <div class="slide">
+          <h2>Mission</h2>
+          <ul>
+            <li>Deliver value-driven services</li>
+            <li>Uphold professionalism</li>
+            <li>Promote sustainability</li>
+            <li>Embrace innovation</li>
+          </ul>
+        </div>
+        <div class="slide">
+          <h2>Vision</h2>
+          <ul>
+            <li>Be the benchmark for QS excellence</li>
+            <li>Empower client success</li>
+            <li>Lead with integrity</li>
+            <li>Shape the future of the industry</li>
+          </ul>
+        </div>
+        <div class="slide">
+          <h2>Core Values</h2>
+          <ul>
+            <li>Integrity</li>
+            <li>Transparency</li>
+            <li>Innovation</li>
+            <li>Client focus</li>
+          </ul>
+        </div>
+        <div class="nav-buttons">
+          <button type="button" class="prev-btn" aria-label="Previous slide">&laquo;</button>
+          <button type="button" class="next-btn" aria-label="Next slide">&raquo;</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="expertise" id="expertise">
+      <div>
+        <h2>Don’t go in blind <br />Get referred to a QS!</h2>
+        <p>Whether you’re a contractor, homeowner, or developer, we connect you with certified QSs across Africa to guide you through your projects financially, including:</p>
+        <div class="slider-shell">
+          <div class="slide">
+            <h2>Planning Your budget</h2>
+            <ul>
+              <li>Deliver value-driven services</li>
+              <li>Uphold professionalism</li>
+              <li>Promote sustainability</li>
+              <li>Embrace innovation</li>
+            </ul>
+          </div>
+          <div class="slide">
+            <h2>Pricing Tenders</h2>
+            <ul>
+              <li>Be the benchmark for QS excellence</li>
+              <li>Empower client success</li>
+              <li>Lead with integrity</li>
+              <li>Shape the future of the industry</li>
+            </ul>
+          </div>
+          <div class="slide">
+            <h2>Managing contractors' payments</h2>
+            <ul>
+              <li>Integrity</li>
+              <li>Transparency</li>
+              <li>Innovation</li>
+              <li>Client focus</li>
+            </ul>
+          </div>
+          <div class="slide">
+            <h2>Controlling costs</h2>
+            <ul>
+              <li>Integrity</li>
+              <li>Transparency</li>
+              <li>Innovation</li>
+              <li>Client focus</li>
+            </ul>
+          </div>
+          <div class="nav-buttons">
+            <button type="button" class="prev-btn" aria-label="Previous slide">&laquo;</button>
+            <button type="button" class="next-btn" aria-label="Next slide">&raquo;</button>
+          </div>
+        </div>
+        <p>Click <a href="{{ url_for('register') }}">myQS</a> to get started now!</p>
+      </div>
+      <div>
+        <p>
+          Securing a qualified Quantity Surveyor can be challenging for individual clients and small-scale developers. Whether constructing a new home, undertaking renovations, or managing a limited budget, professional cost oversight is essential—yet often difficult to access.
+          <br/>
+          <a href="#">That is where we come in.</a>
+          <br/>
+          myQS streamlines access to licensed Quantity Surveyors, enabling property owners and developers to engage expertise promptly, confidently, and professionally.
+        </p>
+      </div>
+      <p class="hashtags">#myQS | #buildnaplan | #BuildSmart | #CostControl | #ProjectSuccess</p>
+    </section>
+
+    <section class="grow" id="grow">
+      <h2>Grow with us!</h2>
+      <p>
+        Are you a qualified <span class="highlight">Quantity Surveyor</span> looking to grow your client base and get real project opportunities?
+        <br />We’re building Africa’s leading QS referral platform — and we want <strong>YOU</strong> to be part of it.
+      </p>
+      <br/>
+      <h3>Partner With Us</h3>
+      <p>Look no further! Click <a href="{{ url_for('register') }}">here</a> to join the community transforming construction.</p>
+      <br/><br/>
+      <h3>Register with us</h3>
+      <form
+        class="contact-form dummy-register-form"
+        action="{{ url_for('register') }}"
+        method="get"
+        data-redirect-url="{{ url_for('register') }}"
+      >
+        <input type="text" name="name_preview" placeholder="Full Name" autocomplete="name" />
+        <input type="email" name="email_preview" placeholder="Email" autocomplete="email" />
+        <button type="submit">Continue to Register</button>
+      </form>
+    </section>
+
+    <section class="being" id="being">
+      <h1>Being a QS</h1>
+      <p>A <strong>QS</strong> gives you clear, accurate control of project costs.</p>
+      <ul>
+        <li>Set a realistic budget.</li>
+        <li>Price tenders correctly.</li>
+        <li>Track contractor payments.</li>
+        <li>Control costs during delivery.</li>
+      </ul>
+      <p>Need early guidance? A QS can run a quick feasibility check:</p>
+      <ul>
+        <li>Does the design fit your budget?</li>
+        <li>Where can you save safely?</li>
+        <li>What are the key cost risks?</li>
+      </ul>
+      <p>With <a href="{{ url_for('register') }}">myQS</a>, you connect with certified QS professionals fast.</p>
+    </section>
+
+    <section id="contact">
+      <h1>Contact Us</h1>
+      <p class="subtitle">Not a member yet? Use this page for inquiries, support, and project questions.</p>
+      <div class="contact-form">
+        <form action="/send-message" method="POST">
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="email" name="email" placeholder="Your Email" required>
+          <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+      <div class="contact-info">
+        <h3>Contact Info</h3>
+        <p><strong>Email:</strong> <a href="mailto:info@myqs.co.ke">info@myqs.co.ke</a></p>
+        <p><strong>Phone:</strong> <a href="tel:+254768930892">+254 768 930 892</a></p>
+        <p><strong>Address:</strong><br>22-60200<br>Nairobi, Kenya</p>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

@@ -12,12 +12,28 @@
   <h1>QS Dashboard</h1>
   <p>Welcome, {{ name }}. Open jobs uploaded by clients appear below.</p>
   {% if welcome_message %}<p>{{ welcome_message }}</p>{% endif %}
+  {% if approval_pending_message %}
+  <section>
+    <h2>Account Status: {{ account_status }}</h2>
+    <p>You have registered successfully but your account is not yet confirmed for task participation.</p>
+    <p>Complete the registration fee to unlock tasks.</p>
+    <p>
+      <a href="{{ qs_payment_link }}">Pay Registration Fee</a>
+      |
+      <a href="{{ support_link }}">Contact Support</a>
+    </p>
+  </section>
+  {% endif %}
   <p class="top-links">
     <a href="{{ url_for('inbox') }}">Inbox{% if unread_count %}<span class="badge">{{ unread_count }}</span>{% endif %}</a> |
     <a href="{{ url_for('logout') }}">Logout</a>
   </p>
 
+{% if account_status == "Approved" %}
   <h2>Jobs Feed</h2>
+{% else %}
+  <h2>Jobs Feed (Locked)</h2>
+{% endif %}
   {% if jobs %}
   <table>
     <thead>

@@ -7,22 +7,23 @@
   <title>myQS</title>
   <meta name="description" content="Brief description of the webpage" />
   <link rel="icon" href="{{ url_for('static', filename='pics/favicon.png') }}" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
   <script src="{{ url_for('static', filename='js/mobile.js') }}" defer></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="marketing-skin">
   <div id="scroll-progress" aria-hidden="true"></div>
   <button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">↑</button>
   <button id="theme-toggle" class="theme-toggle-btn" type="button" aria-label="Toggle dark and light mode">🌗</button>
   <header>
-    <div>
-      <img
-        src="{{ url_for('static', filename='pics/favicon.png') }}"
-        alt="myQS logo"
-        class="header-logo"
-      />
-    </div>
+    <img
+      src="{{ url_for('static', filename='pics/favicon.png') }}"
+      alt="myQS logo"
+      class="header-logo"
+    />
   </header>
 
   <main>
@@ -34,28 +35,39 @@
 
     <nav id="mobile-nav" aria-label="Main navigation">
       <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#expertise">Services</a></li>
-        <li><a href="#grow">Join myQS</a></li>
-        <li><a href="#being">Being a QS</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#about"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> About</a></li>
+        <li><a href="#expertise"><i class="fa-solid fa-briefcase" aria-hidden="true"></i> Services</a></li>
+        <li><a href="#grow"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Join myQS</a></li>
+        <li><a href="#being"><i class="fa-solid fa-helmet-safety" aria-hidden="true"></i> Being a QS</a></li>
+        <li><a href="#contact"><i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i> Contact</a></li>
       </ul>
     </nav>
 
     <div id="overlay"></div>
 
     <section class="Welcome" id="welcome">
-      <h1>Welcome to my<span>QS</span></h1>
-      <div class="bubble-wrapper">
-        <img src="{{ url_for('static', filename='pics/thought-bubble.png') }}" alt="Bubble" id="bubble" />
-        <p class="bubble-text">
-          Delivering comprehensive quantity surveying solutions across all sectors of the built environment with precision, integrity, and innovation.
-        </p>
+      <div class="welcome-copy">
+        <h1>Welcome to my<span>QS</span></h1>
+        <div class="welcome-thought-bubble">
+          <p class="bubble-text">
+            Delivering comprehensive quantity surveying solutions across all sectors of the built environment with precision, integrity, and innovation.
+          </p>
+          <span class="bubble-dot dot-one" aria-hidden="true"></span>
+          <span class="bubble-dot dot-two" aria-hidden="true"></span>
+        </div>
+        <img
+          class="welcome-avatar"
+          src="{{ url_for('static', filename='pics/76d323fc-ec27-4ca0-afe9-f632c907bf6c-Photoroom.png') }}"
+          alt="QS mascot"
+        />
+      </div>
+      <div class="welcome-hero-image">
+        <img src="{{ url_for('static', filename='pics/image.jpg') }}" alt="Quantity Surveyor" />
       </div>
     </section>
 
     <section class="about" id="about">
-      <h1>About us</h1>
+      <h1><i class="fa-solid fa-building-circle-check section-title-icon" aria-hidden="true"></i> About us</h1>
       <p>
         At <strong>my<span>Qs</span></strong>, we combine industry expertise with innovative
         technology to deliver exceptional quantity surveying services that add tangible value to your construction projects.
@@ -65,7 +77,7 @@
       </p>
       <div class="slider-shell">
         <div class="slide">
-          <h2>Mission</h2>
+          <h2><i class="fa-solid fa-bullseye slide-title-icon" aria-hidden="true"></i> Mission</h2>
           <ul>
             <li>Deliver value-driven services</li>
             <li>Uphold professionalism</li>
@@ -74,7 +86,7 @@
           </ul>
         </div>
         <div class="slide">
-          <h2>Vision</h2>
+          <h2><i class="fa-solid fa-binoculars slide-title-icon" aria-hidden="true"></i> Vision</h2>
           <ul>
             <li>Be the benchmark for QS excellence</li>
             <li>Empower client success</li>
@@ -83,7 +95,7 @@
           </ul>
         </div>
         <div class="slide">
-          <h2>Core Values</h2>
+          <h2><i class="fa-solid fa-gem slide-title-icon" aria-hidden="true"></i> Core Values</h2>
           <ul>
             <li>Integrity</li>
             <li>Transparency</li>
@@ -100,11 +112,11 @@
 
     <section class="expertise" id="expertise">
       <div>
-        <h2>Don’t go in blind <br />Get referred to a QS!</h2>
+        <h2><i class="fa-solid fa-compass-drafting section-title-icon" aria-hidden="true"></i> Don’t go in blind <br />Get referred to a QS!</h2>
         <p>Whether you’re a contractor, homeowner, or developer, we connect you with certified QSs across Africa to guide you through your projects financially, including:</p>
         <div class="slider-shell">
           <div class="slide">
-            <h2>Planning Your budget</h2>
+            <h2><i class="fa-solid fa-coins slide-title-icon" aria-hidden="true"></i> Planning Your budget</h2>
             <ul>
               <li>Deliver value-driven services</li>
               <li>Uphold professionalism</li>
@@ -113,7 +125,7 @@
             </ul>
           </div>
           <div class="slide">
-            <h2>Pricing Tenders</h2>
+            <h2><i class="fa-solid fa-file-signature slide-title-icon" aria-hidden="true"></i> Pricing Tenders</h2>
             <ul>
               <li>Be the benchmark for QS excellence</li>
               <li>Empower client success</li>
@@ -122,7 +134,7 @@
             </ul>
           </div>
           <div class="slide">
-            <h2>Managing contractors' payments</h2>
+            <h2><i class="fa-solid fa-money-check-dollar slide-title-icon" aria-hidden="true"></i> Managing contractors' payments</h2>
             <ul>
               <li>Integrity</li>
               <li>Transparency</li>
@@ -131,7 +143,7 @@
             </ul>
           </div>
           <div class="slide">
-            <h2>Controlling costs</h2>
+            <h2><i class="fa-solid fa-chart-line slide-title-icon" aria-hidden="true"></i> Controlling costs</h2>
             <ul>
               <li>Integrity</li>
               <li>Transparency</li>
@@ -144,77 +156,152 @@
             <button type="button" class="next-btn" aria-label="Next slide">&raquo;</button>
           </div>
         </div>
-        <p>Click <a href="{{ url_for('register') }}">myQS</a> to get started now!</p>
+        <p><i class="fa-solid fa-hand-pointer cta-inline-icon" aria-hidden="true"></i> Click <a href="{{ url_for('register') }}">myQS</a> to get started now!</p>
       </div>
-      <div>
-        <p>
-          Securing a qualified Quantity Surveyor can be challenging for individual clients and small-scale developers. Whether constructing a new home, undertaking renovations, or managing a limited budget, professional cost oversight is essential—yet often difficult to access.
-          <br/>
-          <a href="#">That is where we come in.</a>
-          <br/>
-          myQS streamlines access to licensed Quantity Surveyors, enabling property owners and developers to engage expertise promptly, confidently, and professionally.
-        </p>
+      <div class="expertise-cards">
+        <div class="expertise-card expertise-summary">
+          <p>
+            Securing a qualified Quantity Surveyor can be challenging for individual clients and small-scale developers. Whether constructing a new home, undertaking renovations, or managing a limited budget, professional cost oversight is essential yet often difficult to access.
+            <br/>
+            <a href="#">That is where we come in.</a>
+            <br/>
+            myQS streamlines access to licensed Quantity Surveyors, enabling property owners and developers to engage expertise promptly, confidently, and professionally.
+          </p>
+        </div>
+        <div class="expertise-card expertise-tags">
+          <h3><i class="fa-solid fa-hashtag slide-title-icon" aria-hidden="true"></i> Trending Tags</h3>
+          <ul class="hashtags-list">
+            <li><i class="fa-solid fa-tag" aria-hidden="true"></i> #myQS</li>
+            <li><i class="fa-solid fa-tag" aria-hidden="true"></i> #buildnaplan</li>
+            <li><i class="fa-solid fa-tag" aria-hidden="true"></i> #BuildSmart</li>
+            <li><i class="fa-solid fa-tag" aria-hidden="true"></i> #CostControl</li>
+            <li><i class="fa-solid fa-tag" aria-hidden="true"></i> #ProjectSuccess</li>
+          </ul>
+        </div>
       </div>
-      <p class="hashtags">#myQS | #buildnaplan | #BuildSmart | #CostControl | #ProjectSuccess</p>
     </section>
 
     <section class="grow" id="grow">
-      <h2>Grow with us!</h2>
-      <p>
-        Are you a qualified <span class="highlight">Quantity Surveyor</span> looking to grow your client base and get real project opportunities?
-        <br />We’re building Africa’s leading QS referral platform — and we want <strong>YOU</strong> to be part of it.
-      </p>
-      <br/>
-      <h3>Partner With Us</h3>
-      <p>Look no further! Click <a href="{{ url_for('register') }}">here</a> to join the community transforming construction.</p>
-      <br/><br/>
-      <h3>Register with us</h3>
-      <form
-        class="contact-form dummy-register-form"
-        action="{{ url_for('register') }}"
-        method="get"
-        data-redirect-url="{{ url_for('register') }}"
-      >
-        <input type="text" name="name_preview" placeholder="Full Name" autocomplete="name" />
-        <input type="email" name="email_preview" placeholder="Email" autocomplete="email" />
-        <button type="submit">Continue to Register</button>
-      </form>
+      <div class="grow-poster">
+        <i class="fa-solid fa-ruler-combined grow-deco deco-top" aria-hidden="true"></i>
+        <i class="fa-solid fa-calculator grow-deco deco-right" aria-hidden="true"></i>
+        <i class="fa-solid fa-pencil grow-deco deco-left" aria-hidden="true"></i>
+        <i class="fa-solid fa-helmet-safety grow-deco deco-bottom" aria-hidden="true"></i>
+
+        <div class="grow-badge">
+          <i class="fa-solid fa-award" aria-hidden="true"></i>
+          <span>#1 QS<br/>Referral Platform</span>
+        </div>
+
+        <h2><i class="fa-solid fa-seedling section-title-icon" aria-hidden="true"></i> Grow with us!</h2>
+
+        <p class="grow-lead">
+          Are you a qualified <span class="highlight">Quantity Surveyor</span> looking to grow your client base and get real project opportunities?
+        </p>
+
+        <p class="grow-callout">
+          We're building Africa's leading QS referral platform and we want <strong>YOU</strong> to be part of it.
+        </p>
+
+        <div class="grow-partner-card">
+          <h3><i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Partner With Us</h3>
+          <p>Look no further! Click <a href="{{ url_for('register') }}">here</a> to join the community transforming construction.</p>
+        </div>
+
+        <div class="grow-register-panel">
+          <h3><i class="fa-solid fa-clipboard-check slide-title-icon" aria-hidden="true"></i> Register with us</h3>
+          <form
+            class="dummy-register-form grow-register-form"
+            action="{{ url_for('register') }}"
+            method="get"
+            data-redirect-url="{{ url_for('register') }}"
+          >
+            <label class="grow-input-row">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+              <input type="text" name="name_preview" placeholder="Full Name" autocomplete="name" />
+            </label>
+            <label class="grow-input-row">
+              <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+              <input type="email" name="email_preview" placeholder="Email" autocomplete="email" />
+            </label>
+            <button type="submit">Continue to Register</button>
+          </form>
+        </div>
+
+      </div>
     </section>
 
     <section class="being" id="being">
-      <h1>Being a QS</h1>
-      <p>A <strong>QS</strong> gives you clear, accurate control of project costs.</p>
-      <ul>
-        <li>Set a realistic budget.</li>
-        <li>Price tenders correctly.</li>
-        <li>Track contractor payments.</li>
-        <li>Control costs during delivery.</li>
-      </ul>
-      <p>Need early guidance? A QS can run a quick feasibility check:</p>
-      <ul>
-        <li>Does the design fit your budget?</li>
-        <li>Where can you save safely?</li>
-        <li>What are the key cost risks?</li>
-      </ul>
-      <p>With <a href="{{ url_for('register') }}">myQS</a>, you connect with certified QS professionals fast.</p>
+      <div class="being-poster">
+        <i class="fa-solid fa-helmet-safety being-helmet" aria-hidden="true"></i>
+        <h1 class="being-title"><i class="fa-solid fa-helmet-safety section-title-icon" aria-hidden="true"></i> Being a QS</h1>
+
+        <p class="being-intro">A <strong>QS</strong> gives you clear, accurate control of project costs.</p>
+
+        <div class="being-check-card">
+          <ul class="being-check-list">
+            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Set a realistic budget</li>
+            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Price tenders correctly.</li>
+            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Track contractor payments.</li>
+            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Control costs during delivery.</li>
+          </ul>
+        </div>
+
+        <p class="being-guidance"><strong>Need early guidance?</strong> A QS can run a quick feasibility check:</p>
+
+        <div class="being-question-list">
+          <div class="being-question-row">
+            <span class="q-icon"><i class="fa-solid fa-circle-question" aria-hidden="true"></i></span>
+            <span class="q-text">Does the design fit your budget?</span>
+            <span class="q-deco"><i class="fa-solid fa-ruler-combined" aria-hidden="true"></i></span>
+          </div>
+          <div class="being-question-row">
+            <span class="q-icon"><i class="fa-solid fa-circle-question" aria-hidden="true"></i></span>
+            <span class="q-text">Where can you save safely?</span>
+            <span class="q-deco"><i class="fa-solid fa-toolbox" aria-hidden="true"></i></span>
+          </div>
+          <div class="being-question-row">
+            <span class="q-icon"><i class="fa-solid fa-circle-question" aria-hidden="true"></i></span>
+            <span class="q-text">What are the key cost risks?</span>
+            <span class="q-deco"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i></span>
+          </div>
+        </div>
+
+        <p class="being-outro">With <a href="{{ url_for('register') }}">myQS</a>, you connect with certified QS professionals fast.</p>
+
+      </div>
     </section>
 
-    <section id="contact">
-      <h1>Contact Us</h1>
-      <p class="subtitle">Not a member yet? Use this page for inquiries, support, and project questions.</p>
-      <div class="contact-form">
-        <form action="/send-message" method="POST">
-          <input type="text" name="name" placeholder="Your Name" required>
-          <input type="email" name="email" placeholder="Your Email" required>
-          <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-          <button type="submit">Send Message</button>
-        </form>
-      </div>
-      <div class="contact-info">
-        <h3>Contact Info</h3>
-        <p><strong>Email:</strong> <a href="mailto:info@myqs.co.ke">info@myqs.co.ke</a></p>
-        <p><strong>Phone:</strong> <a href="tel:+254768930892">+254 768 930 892</a></p>
-        <p><strong>Address:</strong><br>22-60200<br>Nairobi, Kenya</p>
+    <section id="contact" class="contact-poster-wrap">
+      <div class="contact-poster">
+        <div class="contact-title-strip">
+          <i class="fa-solid fa-helmet-safety contact-title-icon" aria-hidden="true"></i>
+          <h1>Contact Us</h1>
+          <i class="fa-solid fa-link contact-chain left" aria-hidden="true"></i>
+          <i class="fa-solid fa-link contact-chain right" aria-hidden="true"></i>
+        </div>
+
+        <p class="subtitle">Not a member yet? Use this page for inquiries, support, and project questions.</p>
+        <img class="contact-paper-top" src="{{ url_for('static', filename='pics/img0.jpg') }}" alt="Paper board decor" />
+
+        <div class="contact-panels">
+          <div class="contact-board contact-form-board">
+            <form action="/send-message" method="POST" class="contact-poster-form">
+              <input type="text" name="name" placeholder="Your Name" required>
+              <input type="email" name="email" placeholder="Your Email" required>
+              <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+              <button type="submit" class="contact-send-btn">Send Message <i class="fa-solid fa-arrow-pointer" aria-hidden="true"></i></button>
+            </form>
+          </div>
+
+          <div class="contact-board contact-info-board">
+            <h3><i class="fa-solid fa-id-card slide-title-icon" aria-hidden="true"></i> Contact Info</h3>
+            <p><strong>Email:</strong> <a href="mailto:info@myqs.co.ke">info@myqs.co.ke</a></p>
+            <p><strong>Phone:</strong> <a href="tel:+254768930892">+254 768 930 892</a></p>
+            <div class="contact-divider" aria-hidden="true"></div>
+            <p><strong>Address:</strong><br>22-60200<br>Nairobi, Kenya</p>
+          </div>
+        </div>
       </div>
     </section>
 

@@ -44,6 +44,8 @@ app.config["TASK_UPLOAD_FOLDER"] = TASK_UPLOAD_FOLDER
 app.config["SUBMISSION_UPLOAD_FOLDER"] = SUBMISSION_UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 app.config["QS_REGISTRATION_FEE"] = os.environ.get("QS_REGISTRATION_FEE", "100")
+app.config["QS_PAYMENT_LINK"] = os.environ.get("QS_PAYMENT_LINK", "#")
+app.config["SUPPORT_LINK"] = os.environ.get("SUPPORT_LINK", "mailto:support@myqs.com")
 
 EVENT_LABELS = {
     "job_posted": "Client posted a new job",
@@ -263,10 +265,6 @@ def role_required(*allowed_roles):
                 return redirect(url_for("login"))
             if session.get("role") not in allowed_roles:
                 return "Forbidden", 403
-            if session.get("role") == "qs":
-                registration = get_qs_registration(session["user_id"])
-                if registration is not None and registration["status"] != "approved":
-                    return "QS account access is pending payment confirmation by admin.", 403
             return view(*args, **kwargs)
 
         return wrapped
@@ -281,6 +279,13 @@ def get_qs_registration(user_id):
         "FROM qs_registrations WHERE user_id = ?",
         (user_id,),
     ).fetchone()
+
+
+def is_qs_approved(user_id):
+    registration = get_qs_registration(user_id)
+    if registration is None:
+        return True
+    return registration["status"] == "approved"
 
 
 def allowed_file(filename):
@@ -304,8 +309,10 @@ def get_job_or_404(job_id):
 
 def can_access_job(job):
     role = session.get("role")
-    if role in {"admin", "qs"}:
+    if role == "admin":
         return True
+    if role == "qs":
+        return is_qs_approved(session.get("user_id"))
     if role == "client" and job["client_id"] == session.get("user_id"):
         return True
     return False
@@ -550,12 +557,7 @@ def login():
 
         if user is None or not check_password_hash(user["password_hash"], password):
             return render_template("login.html", error="Invalid email or password.")
-        if user["role"] == "qs" and user["qs_status"] in {"pending_confirmation", "rejected"}:
-            if user["qs_status"] == "pending_confirmation":
-                return render_template(
-                    "login.html",
-                    error="Your QS payment is awaiting admin confirmation. Access will be granted after approval.",
-                )
+        if user["role"] == "qs" and user["qs_status"] == "rejected":
             return render_template(
                 "login.html",
                 error="Your QS registration was rejected. Please contact admin support.",
@@ -655,15 +657,20 @@ def create_job():
 @role_required("qs")
 def qs_dashboard():
     db = get_db()
-    open_jobs = db.execute(
-        "SELECT j.id, j.title, j.status, j.file_path, j.created_at, u.name AS client_name, "
-        "a.qs_id AS assigned_qs_id, a.claimed_at AS claimed_at, au.name AS assigned_qs_name "
-        "FROM jobs j JOIN users u ON j.client_id = u.id "
-        "LEFT JOIN job_assignments a ON a.job_id = j.id "
-        "LEFT JOIN users au ON au.id = a.qs_id "
-        "WHERE j.status IN ('open', 'negotiating', 'agreed', 'in_progress', 'submitted', 'payment_pending') "
-        "ORDER BY j.created_at DESC"
-    ).fetchall()
+    approval_pending_message = None
+    if is_qs_approved(session["user_id"]):
+        open_jobs = db.execute(
+            "SELECT j.id, j.title, j.status, j.file_path, j.created_at, u.name AS client_name, "
+            "a.qs_id AS assigned_qs_id, a.claimed_at AS claimed_at, au.name AS assigned_qs_name "
+            "FROM jobs j JOIN users u ON j.client_id = u.id "
+            "LEFT JOIN job_assignments a ON a.job_id = j.id "
+            "LEFT JOIN users au ON au.id = a.qs_id "
+            "WHERE j.status IN ('open', 'negotiating', 'agreed', 'in_progress', 'submitted', 'payment_pending') "
+            "ORDER BY j.created_at DESC"
+        ).fetchall()
+    else:
+        open_jobs = []
+        approval_pending_message = "Your registration fee payment is pending admin approval. You can log in, but tasks will unlock only after approval."
     unread_count = unread_count_for_user(session["role"], session["user_id"])
     return render_template(
         "dashboard_qs.html",
@@ -671,6 +678,10 @@ def qs_dashboard():
         name=session.get("name"),
         unread_count=unread_count,
         welcome_message=session.pop("welcome_message", None),
+        approval_pending_message=approval_pending_message,
+        account_status=("Pending Payment" if approval_pending_message else "Approved"),
+        qs_payment_link=app.config["QS_PAYMENT_LINK"],
+        support_link=app.config["SUPPORT_LINK"],
     )
 
 
@@ -690,6 +701,8 @@ def download_job_file(job_id):
 @app.route("/jobs/<int:job_id>/submissions/new", methods=["POST"])
 @role_required("qs")
 def upload_submission(job_id):
+    if not is_qs_approved(session["user_id"]):
+        return "QS account is pending payment approval. You cannot access tasks yet.", 403
     job = get_job_or_404(job_id)
     if job["status"] not in {"agreed", "in_progress", "submitted"}:
         return "Job is not ready for submission", 400
@@ -732,6 +745,8 @@ def upload_submission(job_id):
 @app.route("/jobs/<int:job_id>/claim", methods=["POST"])
 @role_required("qs")
 def claim_job(job_id):
+    if not is_qs_approved(session["user_id"]):
+        return "QS account is pending payment approval. You cannot access tasks yet.", 403
     job = get_job_or_404(job_id)
     if job["status"] not in {"agreed", "in_progress"}:
         return "Job can only be claimed after agreement and admin assignment", 400
@@ -954,6 +969,8 @@ def job_negotiation(job_id):
 @app.route("/jobs/<int:job_id>/offers/qs", methods=["POST"])
 @role_required("qs")
 def qs_offer(job_id):
+    if not is_qs_approved(session["user_id"]):
+        return "QS account is pending payment approval. You cannot access tasks yet.", 403
     job = get_job_or_404(job_id)
     if job["status"] in {"agreed", "in_progress", "submitted", "payment_pending", "paid"}:
         return "Negotiation closed for this job", 400

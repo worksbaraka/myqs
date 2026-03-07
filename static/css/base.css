@@ -58,6 +58,14 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
   color: var(--text-ink);
   background: var(--bg-sand);
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
 }
 
 .shared-scroll-progress {
@@ -243,6 +251,8 @@ td {
   padding: 8px;
   text-align: left;
   vertical-align: top;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 th {
@@ -291,6 +301,38 @@ tr:last-child td {
 @media (max-width: 860px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  body {
+    width: 100%;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  th,
+  td {
+    white-space: normal;
+    min-width: 120px;
+  }
+
+  td form {
+    width: 100%;
+  }
+
+  td form[style*="display:inline"] {
+    display: grid !important;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  td form[style*="display:inline"] button,
+  td form[style*="display:inline"] input {
+    width: 100%;
   }
 
   table {

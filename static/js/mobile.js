@@ -161,24 +161,65 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    let currentIndex = 0;
-    let touchStartX = null;
-    let touchStartY = null;
+    const isTabletRail =
+      window.matchMedia && window.matchMedia('(min-width: 768px) and (max-width: 1023px)').matches;
 
-    function render() {
-      slides.forEach((slide, idx) => {
-        slide.style.display = idx === currentIndex ? 'block' : 'none';
-      });
+    if (!isTabletRail) {
+      let currentIndex = 0;
+
+      function renderSingle() {
+        slides.forEach((slide, idx) => {
+          slide.style.display = idx === currentIndex ? 'block' : 'none';
+        });
+      }
+
+      function nextSingle() {
+        currentIndex = (currentIndex + 1) % slides.length;
+        renderSingle();
+      }
+
+      function prevSingle() {
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        renderSingle();
+      }
+
+      const prevBtn = navButtons.querySelector('.prev-btn');
+      const nextBtn = navButtons.querySelector('.next-btn');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', prevSingle);
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', nextSingle);
+      }
+
+      renderSingle();
+      return;
+    }
+
+    const track = document.createElement('div');
+    track.className = 'slider-track';
+    host.insertBefore(track, navButtons);
+    slides.forEach((slide) => track.appendChild(slide));
+
+    function getScrollStep() {
+      // Scroll by almost one viewport of cards, similar to video rails.
+      return Math.max(220, Math.round(track.clientWidth * 0.9));
     }
 
     function nextSlide() {
-      currentIndex = (currentIndex + 1) % slides.length;
-      render();
+      track.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
     }
 
     function prevSlide() {
-      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-      render();
+      track.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
+    }
+
+    function updateSliderState() {
+      const maxScrollLeft = Math.max(0, track.scrollWidth - track.clientWidth);
+      const atStart = track.scrollLeft <= 4;
+      const atEnd = track.scrollLeft >= maxScrollLeft - 4;
+      host.classList.toggle('at-start', atStart);
+      host.classList.toggle('at-end', atEnd);
     }
 
     const prevBtn = navButtons.querySelector('.prev-btn');
@@ -191,55 +232,9 @@ document.addEventListener('DOMContentLoaded', () => {
       nextBtn.addEventListener('click', nextSlide);
     }
 
-    // Swipe navigation (mobile): swipe left -> next, swipe right -> previous.
-    host.addEventListener(
-      'touchstart',
-      (event) => {
-        if (!event.touches || !event.touches.length) {
-          return;
-        }
-        touchStartX = event.touches[0].clientX;
-        touchStartY = event.touches[0].clientY;
-      },
-      { passive: true }
-    );
-
-    host.addEventListener(
-      'touchend',
-      (event) => {
-        if (touchStartX === null || touchStartY === null) {
-          return;
-        }
-
-        const changed = event.changedTouches && event.changedTouches[0];
-        if (!changed) {
-          touchStartX = null;
-          touchStartY = null;
-          return;
-        }
-
-        const deltaX = changed.clientX - touchStartX;
-        const deltaY = changed.clientY - touchStartY;
-
-        touchStartX = null;
-        touchStartY = null;
-
-        // Ignore mostly vertical gestures.
-        if (Math.abs(deltaY) > Math.abs(deltaX)) {
-          return;
-        }
-
-        const swipeThreshold = 40;
-        if (deltaX <= -swipeThreshold) {
-          nextSlide();
-        } else if (deltaX >= swipeThreshold) {
-          prevSlide();
-        }
-      },
-      { passive: true }
-    );
-
-    render();
+    track.addEventListener('scroll', updateSliderState, { passive: true });
+    window.addEventListener('resize', updateSliderState);
+    updateSliderState();
   }
 
   initSlider('.about');

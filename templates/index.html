@@ -30,6 +30,20 @@
     <div class="bar">
       <button id="menu-btn" class="icon left">☰</button>
       <a href="#welcome" class="bar-logo" aria-label="Go to top">my<span>QS</span></a>
+      <div class="bar-desktop">
+        <nav class="bar-desktop-links" aria-label="Laptop primary navigation">
+          <a href="#about">About</a>
+          <a href="#expertise">Services</a>
+          <a href="#grow">Join myQS</a>
+          <a href="#being">Being a QS</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <label class="bar-search" aria-label="Search">
+          <input type="search" placeholder="Search for a service, city, or destination..." />
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        </label>
+        <a href="{{ url_for('login') }}" class="bar-cta">Login</a>
+      </div>
       <a href="/login" class="iconR">🔒</a>
     </div>
 
@@ -55,16 +69,14 @@
           <span class="bubble-dot dot-one" aria-hidden="true"></span>
           <span class="bubble-dot dot-two" aria-hidden="true"></span>
         </div>
-        <img
-          class="welcome-avatar"
-          src="{{ url_for('static', filename='pics/76d323fc-ec27-4ca0-afe9-f632c907bf6c-Photoroom.png') }}"
-          alt="QS mascot"
-        />
       </div>
       <div class="welcome-hero-image">
         <img src="{{ url_for('static', filename='pics/image.jpg') }}" alt="Quantity Surveyor" />
       </div>
     </section>
+
+    <div class="laptop-shell">
+      <div class="laptop-main">
 
     <section class="about" id="about">
       <h1><i class="fa-solid fa-building-circle-check section-title-icon" aria-hidden="true"></i> About us</h1>
@@ -109,6 +121,27 @@
         </div>
       </div>
     </section>
+    <aside class="section-side side-about-review" aria-label="Review for about us section">
+      <div class="insight-card review-card">
+        <h4><i class="fa-solid fa-star-half-stroke" aria-hidden="true"></i> Client Review</h4>
+        <div class="review-head">
+          <img src="{{ url_for('static', filename='pics/me.jpeg') }}" alt="Client portrait" class="review-avatar" />
+          <div>
+            <p class="review-name">A. Mwangi</p>
+            <p class="review-role">Property Developer</p>
+          </div>
+        </div>
+        <div class="review-stars" aria-label="5 star review">
+          <i class="fa-solid fa-star" aria-hidden="true"></i>
+          <i class="fa-solid fa-star" aria-hidden="true"></i>
+          <i class="fa-solid fa-star" aria-hidden="true"></i>
+          <i class="fa-solid fa-star" aria-hidden="true"></i>
+          <i class="fa-solid fa-star" aria-hidden="true"></i>
+        </div>
+        <p>"myQS helped us get the right QS fast and kept our budget realistic from day one."</p>
+        <p class="review-author">- Property Developer, Nairobi</p>
+      </div>
+    </aside>
 
     <section class="expertise" id="expertise">
       <div>
@@ -180,6 +213,12 @@
         </div>
       </div>
     </section>
+    <aside class="section-side side-snapshot" aria-label="Snapshot for expertise">
+      <div class="insight-card">
+        <h4><i class="fa-solid fa-chart-simple" aria-hidden="true"></i> Site Snapshot</h4>
+        <p>Matched to <strong>Don’t go in blind</strong>: trust signals and quick platform proof for low-interaction visitors.</p>
+      </div>
+    </aside>
 
     <section class="grow" id="grow">
       <div class="grow-poster">
@@ -230,6 +269,16 @@
 
       </div>
     </section>
+    <aside class="section-side side-reviews" aria-label="Reviews for grow section">
+      <div class="insight-card">
+        <h4><i class="fa-solid fa-comments" aria-hidden="true"></i> Reviews</h4>
+        <ul>
+          <li><strong>4.9/5</strong> average client rating</li>
+          <li><strong>94%</strong> repeat client satisfaction</li>
+          <li><strong>+320</strong> positive testimonials</li>
+        </ul>
+      </div>
+    </aside>
 
     <section class="being" id="being">
       <div class="being-poster">
@@ -265,12 +314,26 @@
             <span class="q-text">What are the key cost risks?</span>
             <span class="q-deco"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i></span>
           </div>
+          <div class="nav-buttons">
+            <button type="button" class="prev-btn" aria-label="Previous slide">&laquo;</button>
+            <button type="button" class="next-btn" aria-label="Next slide">&raquo;</button>
+          </div>
         </div>
 
         <p class="being-outro">With <a href="{{ url_for('register') }}">myQS</a>, you connect with certified QS professionals fast.</p>
 
       </div>
     </section>
+    <aside class="section-side side-compliments" aria-label="Compliments for being a QS section">
+      <div class="insight-card">
+        <h4><i class="fa-solid fa-medal" aria-hidden="true"></i> Compliments</h4>
+        <ul>
+          <li>Fast and professional QS referrals</li>
+          <li>Clear guidance on budgeting and tenders</li>
+          <li>Reliable cost-control project support</li>
+        </ul>
+      </div>
+    </aside>
 
     <section id="contact" class="contact-poster-wrap">
       <div class="contact-poster">
@@ -304,6 +367,27 @@
         </div>
       </div>
     </section>
+    <aside class="section-side side-stats" aria-label="Website stats for contact section">
+      <div class="insight-card">
+        <h4><i class="fa-solid fa-signal" aria-hidden="true"></i> Website Stats</h4>
+        <div class="stat-row"><span>Monthly Visitors</span><strong>12.8k</strong></div>
+        <div class="stat-row"><span>Referral Requests</span><strong>1.1k</strong></div>
+        <div class="stat-row"><span>Avg Response Time</span><strong>18 min</strong></div>
+        <div class="stat-row"><span>Success Match Rate</span><strong>91%</strong></div>
+        <div class="mini-bars" aria-hidden="true">
+          <div class="mini-bar-item"><span>Jan</span><i style="--bar: 58%"></i></div>
+          <div class="mini-bar-item"><span>Feb</span><i style="--bar: 69%"></i></div>
+          <div class="mini-bar-item"><span>Mar</span><i style="--bar: 77%"></i></div>
+          <div class="mini-bar-item"><span>Apr</span><i style="--bar: 84%"></i></div>
+        </div>
+        <div class="mini-metrics">
+          <div class="metric-chip"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Cost variance: <strong>4.3%</strong></div>
+          <div class="metric-chip"><i class="fa-solid fa-wave-square" aria-hidden="true"></i> Completion trend: <strong>+12%</strong></div>
+        </div>
+      </div>
+    </aside>
+      </div>
+    </div>
 
   </main>
 

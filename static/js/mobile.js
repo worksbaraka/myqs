@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const isTabletRail =
-      window.matchMedia && window.matchMedia('(min-width: 768px) and (max-width: 1023px)').matches;
+      window.matchMedia && window.matchMedia('(min-width: 768px) and (max-width: 1439px)').matches;
 
     if (!isTabletRail) {
       let currentIndex = 0;
@@ -239,6 +239,66 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initSlider('.about');
   initSlider('.expertise');
+
+  function initBeingQuestionRail() {
+    const list = document.querySelector('.being-question-list');
+    if (!list) {
+      return;
+    }
+
+    const navButtons = list.querySelector('.nav-buttons');
+    const rows = Array.from(list.querySelectorAll(':scope > .being-question-row'));
+    if (!navButtons || !rows.length) {
+      return;
+    }
+
+    const isRailView =
+      window.matchMedia && window.matchMedia('(min-width: 768px) and (max-width: 1439px)').matches;
+
+    if (!isRailView) {
+      navButtons.style.display = 'none';
+      return;
+    }
+
+    const track = document.createElement('div');
+    track.className = 'being-track';
+    list.insertBefore(track, navButtons);
+    rows.forEach((row) => track.appendChild(row));
+
+    function getScrollStep() {
+      // Keep 2 cards + a visible hint of the next card.
+      return Math.max(220, Math.round(track.clientWidth * 0.72));
+    }
+
+    function nextSlide() {
+      track.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
+    }
+
+    function prevSlide() {
+      track.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
+    }
+
+    function updateState() {
+      const maxScrollLeft = Math.max(0, track.scrollWidth - track.clientWidth);
+      const atStart = track.scrollLeft <= 4;
+      const atEnd = track.scrollLeft >= maxScrollLeft - 4;
+      list.classList.toggle('at-start', atStart);
+      list.classList.toggle('at-end', atEnd);
+    }
+
+    const prevBtn = navButtons.querySelector('.prev-btn');
+    const nextBtn = navButtons.querySelector('.next-btn');
+    if (prevBtn) {
+      prevBtn.addEventListener('click', prevSlide);
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', nextSlide);
+    }
+
+    track.addEventListener('scroll', updateState, { passive: true });
+    window.addEventListener('resize', updateState);
+    updateState();
+  }
 
   function initDummyRegisterRedirect() {
     const redirectForm = document.querySelector('.dummy-register-form');
@@ -389,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initParallaxSections();
   initCardTilt();
+  initBeingQuestionRail();
 
   function applyTheme(theme) {
     const root = document.documentElement;

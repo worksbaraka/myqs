@@ -433,6 +433,36 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/terms")
+def terms():
+    return render_template("terms.html")
+
+
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
+
+@app.route("/verification")
+def verification():
+    return render_template("verification.html")
+
+
+@app.route("/payments")
+def payments():
+    return render_template("payments.html")
+
+
+@app.route("/disclaimer")
+def disclaimer():
+    return render_template("disclaimer.html")
+
+
+@app.route("/cookies")
+def cookies():
+    return render_template("cookies.html")
+
+
 @app.route("/mobile")
 def mobile():
     return redirect(url_for("index"))
@@ -471,11 +501,18 @@ def register():
         qualification = request.form.get("qualification", "").strip()
         experience_years_raw = request.form.get("experience_years", "").strip()
         payment_reference = request.form.get("payment_reference", "").strip()
+        accepted_legal = request.form.get("accept_legal")
 
         if not name or not email or not password:
             return render_template(
                 "register.html",
                 error="Name, email, and password are required.",
+                qs_registration_fee=app.config["QS_REGISTRATION_FEE"],
+            )
+        if accepted_legal != "yes":
+            return render_template(
+                "register.html",
+                error="You must agree to the Terms of Service and Privacy Policy.",
                 qs_registration_fee=app.config["QS_REGISTRATION_FEE"],
             )
         if role not in {"client", "qs", "admin"}:
